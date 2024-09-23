@@ -1,0 +1,51 @@
+package com.deepak.ecom_project.service;
+
+import java.io.IOException;
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
+
+import com.deepak.ecom_project.model.Product;
+import com.deepak.ecom_project.repository.ProductRepository;
+
+@Service
+public class ProductService {
+
+    @Autowired
+    ProductRepository repo;
+
+    public List<Product> getAllProducts() {
+        
+        return repo.findAll();
+    }
+
+    public Product getProductById(int id) {
+        return repo.findById(id).orElse(null);
+    }
+
+    public Product addProduct(Product product, MultipartFile imageFile) throws IOException {
+        
+        product.setImageName(imageFile.getOriginalFilename());
+        product.setImageType(imageFile.getContentType());
+        product.setImageData(imageFile.getBytes());
+        return repo.save(product);
+    }
+
+    public Product updateProduct(int prodId, Product product, MultipartFile imageFile) throws IOException {
+        product.setImageName(imageFile.getOriginalFilename());
+        product.setImageType(imageFile.getContentType());
+        product.setImageData(imageFile.getBytes());
+        return repo.save(product);
+    }
+
+    public void  deleteProduct(int proId) {
+        repo.deleteById(proId);
+    }
+
+    public List<Product> searchProducts(String keyword) {
+        return repo.searchProducts(keyword);
+    }
+
+}
